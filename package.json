@@ -1,0 +1,39 @@
+{
+  "name": "watched-addon-nasa",
+  "version": "0.0.2",
+  "main": "dist",
+  "scripts": {
+    "build": "tsc",
+    "start": "watched-sdk start --prod",
+    "develop": "watched-sdk start",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@watchedcom/sdk": "^0.19.1",
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
+    "prettier": "^1.19.1",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "@watchedcom/test": "^0.19.1",
+    "@types/jest": "^25.1.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
