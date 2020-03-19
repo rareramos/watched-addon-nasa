@@ -26,11 +26,11 @@ const directoryHandler: WorkerHandlers['directory'] = async (input: any, ctx) =>
   return await nasa.getVideos(input);
 };
 
-/*
 const itemHandler: WorkerHandlers['item'] = async (input: any, ctx) => {
-  return await nasa.getChannel(input);
+  return await nasa.getVideo(input);
 };
 
+/*
 const sourceHandler: WorkerHandlers['source'] = async (input, ctx) => {
   return [];
 };
@@ -38,6 +38,6 @@ const sourceHandler: WorkerHandlers['source'] = async (input, ctx) => {
 
 nasaAddon.registerActionHandler('directory', directoryHandler);
 
-//nasaAddon.registerActionHandler('item', itemHandler);
+nasaAddon.registerActionHandler('item', itemHandler);
 
 //nasaAddon.registerActionHandler('source', sourceHandler);

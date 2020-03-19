@@ -7,12 +7,14 @@ let locales = require('./locales.json');
 locales = locales.map(item => ({ key: item.code, value: item.name }));
 */
 
+let videos: any = [];
+
 const apiUrl = 'https://www.nasa.gov';
 
 const logger = (...args) => {
-  //if (process.env.DEBUG) {
-  console.log(`API `, ...args);
-  //}
+  if (process.env.DEBUG) {
+    console.log(`API `, ...args);
+  }
 };
 
 class NasaApi {
@@ -20,15 +22,15 @@ class NasaApi {
     const limit = 24;
     const offset = page > 0 ? (page - 1) * limit : 0;
     return await this.get('api/1/query/ytPlist/PLiuUQ9asub3RHqKdK_XZSZ8I_981UPhvX.json', {
-      ...filter,
       feedLimit: 100,
-      pagesize: limit,
       index: offset,
+      pagesize: limit,
       //page,
     }).then(({ data }) => {
       const items = Array.from(data.items || []).map<ChannelItem>((item: any) =>
         this.convertChannel(item)
       );
+      videos = items;
       return {
         hasMore: offset + limit < data.totalResults,
         items,
@@ -37,6 +39,11 @@ class NasaApi {
         },
       };
     });
+  }
+
+  async getVideo({ ids }) {
+    const id = ids.id;
+    return videos.find(it => it.id === id);
   }
 
   convertChannel(data: any): ChannelItem {
@@ -49,8 +56,8 @@ class NasaApi {
       description: snippet.description,
       releaseDate: snippet.publishedAt,
       images: {
-        logo: snippet.thumbnails.medium.url || undefined,
-        poster: snippet.thumbnails.medium.url || undefined,
+        logo: snippet.thumbnails.standard.url || undefined,
+        poster: snippet.thumbnails.standard.url || undefined,
       },
       sources: [],
     };
@@ -193,7 +200,8 @@ const client = new NasaApi();
 
 /*
 async function boot() {
-  await client.getChannel({ ids: { id: 41203135 } });
+  const res = await client.getVideos({ page: 1 });
+  console.log(res);
 }
 boot();
 */
