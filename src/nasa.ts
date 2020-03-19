@@ -23,7 +23,7 @@ class NasaApi {
     const offset = page > 0 ? (page - 1) * limit : 0;
     return await this.get('api/1/query/ytPlist/PLiuUQ9asub3RHqKdK_XZSZ8I_981UPhvX.json', {
       feedLimit: 100,
-      index: offset,
+      index: offset >= 96 ? 96 : offset,
       pagesize: limit,
       //page,
     }).then(({ data }) => {
@@ -32,7 +32,7 @@ class NasaApi {
       );
       videos = items;
       return {
-        hasMore: offset + limit < data.totalResults,
+        hasMore: offset <= 96,
         items,
         features: {
           filter: [],
