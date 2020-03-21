@@ -1,6 +1,6 @@
-import { ChannelItem, DirectoryItem, DirectoryFeatures } from '@watchedcom/sdk';
-import fetch from 'node-fetch';
-import { parse as parseUrl, format as formatUrl } from 'url';
+import { ChannelItem, DirectoryItem, DirectoryFeatures } from "@watchedcom/sdk";
+import fetch from "node-fetch";
+import { parse as parseUrl, format as formatUrl } from "url";
 
 /*
 let locales = require('./locales.json');
@@ -9,7 +9,7 @@ locales = locales.map(item => ({ key: item.code, value: item.name }));
 
 let videos: any = [];
 
-const apiUrl = 'https://www.nasa.gov';
+const apiUrl = "https://www.nasa.gov";
 
 const logger = (...args) => {
   if (process.env.DEBUG) {
@@ -21,22 +21,22 @@ class NasaApi {
   async getVideos({ filter = {}, page }) {
     const limit = 24;
     const offset = page > 0 ? (page - 1) * limit : 0;
-    return await this.get('api/1/query/ytPlist/PLiuUQ9asub3RHqKdK_XZSZ8I_981UPhvX.json', {
-      feedLimit: 100,
-      index: offset >= 96 ? 96 : offset,
-      pagesize: limit,
-      //page,
-    }).then(({ data }) => {
+    return await this.get(
+      "api/1/query/ytPlist/PLiuUQ9asub3RHqKdK_XZSZ8I_981UPhvX.json",
+      {
+        feedLimit: 100,
+        index: offset >= 96 ? 96 : offset,
+        pagesize: limit
+        //page,
+      }
+    ).then(({ data }) => {
       const items = Array.from(data.items || []).map<ChannelItem>((item: any) =>
         this.convertChannel(item)
       );
       videos = items;
       return {
         hasMore: offset <= 96,
-        items,
-        features: {
-          filter: [],
-        },
+        items
       };
     });
   }
@@ -50,30 +50,30 @@ class NasaApi {
     const { id, snippet } = data;
     const channel: ChannelItem = {
       id: id,
-      type: 'channel',
+      type: "channel",
       ids: { id },
       name: snippet.title,
       description: snippet.description,
       releaseDate: snippet.publishedAt,
       images: {
         logo: snippet.thumbnails.standard.url || undefined,
-        poster: snippet.thumbnails.standard.url || undefined,
+        poster: snippet.thumbnails.standard.url || undefined
       },
-      sources: [],
+      sources: []
     };
-    if (snippet.resourceId && snippet.resourceId.kind === 'youtube#video') {
+    if (snippet.resourceId && snippet.resourceId.kind === "youtube#video") {
       // https://www.youtube.com/embed/jNQXAC9IVRw
       channel.sources?.push({
         id: snippet.resourceId.videoId,
         name: snippet.title,
-        type: 'url',
-        url: `https://www.youtube.com/embed/${snippet.resourceId.videoId}`,
+        type: "url",
+        url: `https://www.youtube.com/embed/${snippet.resourceId.videoId}`
       });
     }
     return channel;
   }
 
-  async get(pathname = '', query = {}, options = {}) {
+  async get(pathname = "", query = {}, options = {}) {
     return this.api({ pathname, query }, options);
   }
 
@@ -82,8 +82,8 @@ class NasaApi {
       { pathname, query },
       {
         ...options,
-        method: 'post',
-        body: data,
+        method: "post",
+        body: data
       }
     );
   }
@@ -93,8 +93,8 @@ class NasaApi {
       { pathname, query },
       {
         ...options,
-        method: 'put',
-        body: data,
+        method: "put",
+        body: data
       }
     );
   }
@@ -104,7 +104,7 @@ class NasaApi {
       { pathname, query },
       {
         ...options,
-        method: 'delete',
+        method: "delete"
       }
     );
   }
@@ -114,18 +114,20 @@ class NasaApi {
     //const apiKey = process.env.NASA_API_KEY;
     headers = {
       //'Content-Type': 'application/json',
-      ...headers,
+      ...headers
     };
-    if (body && typeof body === 'object') {
-      if (headers['Content-Type'] === 'application/json') {
+    if (body && typeof body === "object") {
+      if (headers["Content-Type"] === "application/json") {
         body = this.handleBodyAsJson(body);
-      } else if (headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+      } else if (
+        headers["Content-Type"] === "application/x-www-form-urlencoded"
+      ) {
         body = this.handleBodyAsFormUrlencoded(body);
       }
     }
     let opts = { ...options, body, headers };
     const apiUrl = this.apiUrl(url);
-    logger('request', apiUrl, opts);
+    logger("request", apiUrl, opts);
     const res = await fetch(apiUrl, opts);
     return this.handleResponse(res);
   }
@@ -133,7 +135,7 @@ class NasaApi {
   apiUrl(url: any = {}) {
     let { pathname, query = {}, ...other } = url;
     let parsedApiUrl = parseUrl(apiUrl);
-    if (String(pathname).startsWith('http')) {
+    if (String(pathname).startsWith("http")) {
       parsedApiUrl = parseUrl(pathname);
       pathname = parsedApiUrl.pathname;
     }
@@ -141,13 +143,13 @@ class NasaApi {
       ...parsedApiUrl,
       pathname,
       query,
-      ...other,
+      ...other
     });
   }
 
   async handleResponse(res) {
-    const contentType = res.headers.get('content-type') || 'text';
-    if (contentType.includes('json')) {
+    const contentType = res.headers.get("content-type") || "text";
+    if (contentType.includes("json")) {
       return this.handleResponseAsJson(res);
     }
     return this.handleResponseAsText(res);
@@ -161,9 +163,11 @@ class NasaApi {
     return Object.entries(body)
       .filter(([, value]) => value !== undefined)
       .map(([key, value]) =>
-        Array.isArray(value) ? value.map(item => `${key}=${item}`).join('&') : `${key}=${value}`
+        Array.isArray(value)
+          ? value.map(item => `${key}=${item}`).join("&")
+          : `${key}=${value}`
       )
-      .join('&');
+      .join("&");
   }
 
   async handleResponseAsJson(res) {
@@ -176,7 +180,7 @@ class NasaApi {
       return null;
     }
     let data = await res.json();
-    data = typeof data === 'string' ? JSON.parse(data) : data;
+    data = typeof data === "string" ? JSON.parse(data) : data;
     //logger('response', res.url, res.status, res.headers.get('content-type'), data);
     return data;
   }
