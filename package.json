@@ -4,26 +4,26 @@
   "main": "dist",
   "scripts": {
     "build": "tsc",
-    "start": "watched-sdk start --prod",
-    "develop": "watched-sdk start",
+    "start": "watched-sdk start --single --prod",
+    "develop": "watched-sdk start --single",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@watchedcom/sdk": "^0.19.1",
+    "@watchedcom/sdk": "^0.21.0",
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "typescript": "^3.8.3",
+    "@types/jest": "^25.1.4",
+    "@watchedcom/test": "^0.21.0",
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.8",
-    "prettier": "^1.19.1",
     "jest": "^25.1.0",
+    "lint-staged": "^10.0.8",
+    "prettier": "^2.0.1",
     "ts-jest": "^25.2.1",
-    "@watchedcom/test": "^0.19.1",
-    "@types/jest": "^25.1.4"
+    "typescript": "^3.8.3"
   },
   "husky": {
     "hooks": {
