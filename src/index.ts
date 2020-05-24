@@ -1,7 +1,7 @@
-import { createWorkerAddon, WorkerHandlers } from '@watchedcom/sdk';
+import { createWorkerAddon, runCli } from '@watchedcom/sdk';
 import nasa from './nasa';
 
-export const nasaAddon = createWorkerAddon({
+const nasaAddon = createWorkerAddon({
   id: 'nasa',
   name: 'Nasa Videos',
   version: '0.0.1',
@@ -21,14 +21,17 @@ export const nasaAddon = createWorkerAddon({
   ],
 });
 
-nasaAddon.registerActionHandler('directory', async (input: any, ctx) => {
+nasaAddon.registerActionHandler('directory', async (input, ctx) => {
+  await ctx.requestCache([input.search, input.filter, input.cursor]);
   return await nasa.getVideos(input);
 });
 
-nasaAddon.registerActionHandler('item', async (input: any, ctx) => {
+nasaAddon.registerActionHandler('item', async (input, ctx) => {
   return await nasa.getVideo(input);
 });
 
 // nasaAddon.registerActionHandler('source', async (input, ctx) => {
 //   return [];
 // });
+
+runCli([nasaAddon], { singleMode: true });
